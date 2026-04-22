@@ -1,1 +1,20 @@
-
+{
+  "sharedDir": "extern",
+  "dependenciesDir": "extern",
+  "info": {
+    "name": "MyGorillaTagMod",
+    "id": "com.you.mygorillatagmod",
+    "version": "1.0.0",
+    "url": null,
+    "additionalData": {
+      "overrideSoName": "libmygorillatagmod.so"
+    }
+  },
+  "dependencies": [],
+  "workspace": {
+    "scripts": {},
+    "qmodIncludeDirs": [],
+    "qmodIncludeFiles": [],
+    "qmodOutput": null
+  }
+}
