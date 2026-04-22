@@ -1,1 +1,58 @@
+name: Build Gorilla Tag Mod
 
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '6.0.x'
+
+      - name: Setup QPM (Rust CLI)
+        run: |
+          # Install qpm-rust from cargo or grab a release binary
+          cargo install --git https://github.com/QuestPackageManager/QPM.CLI.git
+          # OR download prebuilt binary:
+          # wget https://github.com/QuestPackageManager/QPM.CLI/releases/latest/download/qpm-linux -O /usr/local/bin/qpm
+          # chmod +x /usr/local/bin/qpm
+
+      - name: Setup Rust (for QPM)
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+
+      - name: Restore QPM dependencies
+        run: |
+          qpm restore
+
+      - name: Build mod
+        run: |
+          dotnet build -c Release
+
+      - name: Package QMOD
+        run: |
+          mkdir -p build
+          # Copy compiled DLL
+          cp bin/Release/net6.0/MyGorillaTagMod.dll build/
+          cp mod.json build/
+          cd build
+          zip -r ../MyGorillaTagMod.qmod .
+          cd ..
+
+      - name: Upload QMOD artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MyGorillaTagMod-qmod
+          path: MyGorillaTagMod.qmod
