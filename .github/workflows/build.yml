@@ -20,18 +20,23 @@ jobs:
         with:
           dotnet-version: '6.0.x'
 
-      - name: Setup QPM (Rust CLI)
-        run: |
-          # Install qpm-rust from cargo or grab a release binary
-          cargo install --git https://github.com/QuestPackageManager/QPM.CLI.git
-          # OR download prebuilt binary:
-          # wget https://github.com/QuestPackageManager/QPM.CLI/releases/latest/download/qpm-linux -O /usr/local/bin/qpm
-          # chmod +x /usr/local/bin/qpm
+      - name: Install Rust Nightly
+        uses: dtolnay/rust-toolchain@nightly
 
-      - name: Setup Rust (for QPM)
-        uses: actions-rs/toolchain@v1
+      - name: Cache cargo registry & build
+        uses: actions/cache@v4
         with:
-          toolchain: stable
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            ~/.cargo/bin
+          key: ${{ runner.os }}-cargo-qpm-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-qpm-
+
+      - name: Install QPM CLI (nightly)
+        run: |
+          cargo +nightly install --git https://github.com/QuestPackageManager/QPM.CLI.git
 
       - name: Restore QPM dependencies
         run: |
@@ -44,7 +49,6 @@ jobs:
       - name: Package QMOD
         run: |
           mkdir -p build
-          # Copy compiled DLL
           cp bin/Release/net6.0/MyGorillaTagMod.dll build/
           cp mod.json build/
           cd build
