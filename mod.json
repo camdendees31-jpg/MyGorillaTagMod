@@ -1,1 +1,16 @@
-
+{
+  "_QPVersion": "0.1.1",
+  "name": "MyGorillaTagMod",
+  "id": "com.you.mygorillatagmod",
+  "author": "YourName",
+  "version": "1.0.0",
+  "packageId": "com.AnotherAxiom.GorillaTag",
+  "packageVersion": "*",
+  "isLibrary": false,
+  "modFiles": [
+    "libmygorillatagmod.so"
+  ],
+  "libraryFiles": [],
+  "fileCopies": [],
+  "dependencies": []
+}
